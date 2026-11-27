@@ -1,0 +1,39 @@
+PROJECT: Kaitun-Bss
+BRANCH: main
+CHANGED_BRANCH_FIELD: filename changed from kaitun_v1.2.lua to KaitunBSS.lua; file content unchanged
+
+MODIFIED_FILE: C:\Users\ADMIN\Downloads\luavm\Kaitun-Bss\KaitunBSS.lua
+DIFF_FILE: C:\Users\ADMIN\Downloads\luavm\Kaitun-Bss\KaitunBSS.rename.patch
+VERIFICATION_FILE: C:\Users\ADMIN\Downloads\luavm\Kaitun-Bss\VERIFICATION.txt
+ROLLBACK_FILE: C:\Users\ADMIN\Downloads\luavm\Kaitun-Bss\ROLLBACK.sh
+
+BASELINE
+COMMAND: Get-FileHash -LiteralPath "C:\Users\ADMIN\Downloads\nangbss\kaitun_v1.2.lua" -Algorithm SHA256; Test-Path -LiteralPath "C:\Users\ADMIN\Downloads\nangbss\kaitun_v1.2.lua"
+INPUT: C:\Users\ADMIN\Downloads\nangbss\kaitun_v1.2.lua
+LITERAL_OUTPUT_RESULT:
+BASELINE_SHA256=71FE9B24A22BA4ABBC9F59AA0E45EF1D4E7D69E65E8DD6F8A65A17952BCEFA86
+BASELINE_SOURCE_EXISTS=True
+EXIT_STATUS: 0
+
+MODIFIED
+COMMAND: Get-FileHash -LiteralPath "C:\Users\ADMIN\Downloads\luavm\Kaitun-Bss\KaitunBSS.lua" -Algorithm SHA256; Test-Path checks for KaitunBSS.lua and kaitun_v1.2.lua in project
+INPUT: C:\Users\ADMIN\Downloads\luavm\Kaitun-Bss\KaitunBSS.lua
+LITERAL_OUTPUT_RESULT:
+MODIFIED_FILE_EXISTS=True
+OLD_PROJECT_NAME_EXISTS=False
+MODIFIED_SHA256=71FE9B24A22BA4ABBC9F59AA0E45EF1D4E7D69E65E8DD6F8A65A17952BCEFA86
+MATCHES_BASELINE=True
+EXIT_STATUS: 0
+
+ROLLBACK
+COMMAND: & "C:\Program Files\Git\bin\bash.exe" "C:\Users\ADMIN\Downloads\luavm\Kaitun-Bss\ROLLBACK.sh" "C:\Users\ADMIN\Downloads\luavm\Kaitun-Bss\rollback-test"; Test-Path and Get-FileHash on rollback-test\kaitun_v1.2.lua
+INPUT: another copy at C:\Users\ADMIN\Downloads\luavm\Kaitun-Bss\rollback-test\KaitunBSS.lua
+LITERAL_OUTPUT_RESULT:
+RESTORED: C:\Users\ADMIN\Downloads\luavm\Kaitun-Bss\rollback-test/kaitun_v1.2.lua
+ROLLBACK_EXIT=0
+RESTORED_FILE_EXISTS=True
+MODIFIED_FILE_ABSENT=True
+RESTORED_SHA256=71FE9B24A22BA4ABBC9F59AA0E45EF1D4E7D69E65E8DD6F8A65A17952BCEFA86
+MATCHES_BASELINE=True
+EXIT_STATUS: 0
+RESTORED_BEHAVIOR_STATUS: another copy restored to kaitun_v1.2.lua, KaitunBSS.lua was removed there, and SHA256 matches baseline. The actual MODIFIED_FILE remains KaitunBSS.lua.
