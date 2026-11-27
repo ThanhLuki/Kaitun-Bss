@@ -16,20 +16,15 @@ import sys
 
 path = Path(sys.argv[1])
 data = path.read_bytes()
-changed = b"""    -- Keep the xpcall result on Runtime instead of allocating two more
-    -- top-level locals. Luau caps a function at 200 local registers, and this
-    -- main chunk is already at that limit on executor builds based on 0.700.
-    Runtime.ProgressionOk, Runtime.ProgressionError = xpcall(progression, debug.traceback)
-    if Runtime.ProgressionOk then break end
-    reportError(\"Progression\", Runtime.ProgressionError)
+changed = b"""    -- LogService exposes MessageOut(message, messageType). OnClientMessage is
+    -- not a Roblox LogService member and raised a red runtime error at boot.
+    connect(LogService.MessageOut, function(message, messageType)
 """
-original = b"""    local okProgression, progressionError = xpcall(progression, debug.traceback)
-    if okProgression then break end
-    reportError(\"Progression\", progressionError)
+original = b"""    connect(LogService.OnClientMessage, function(messageType, message)
 """
 
 if data.count(changed) != 1:
-    raise SystemExit("ERROR: register-fix block was not found exactly once")
+    raise SystemExit("ERROR: LogService-fix block was not found exactly once")
 path.write_bytes(data.replace(changed, original, 1))
 PY
 

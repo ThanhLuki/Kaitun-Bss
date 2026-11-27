@@ -15052,7 +15052,9 @@ end)
 -- 15s de loi spam khong spam correlator.
 task.spawn(function()
     local lastCorrelate = 0
-    connect(LogService.OnClientMessage, function(messageType, message)
+    -- LogService exposes MessageOut(message, messageType). OnClientMessage is
+    -- not a Roblox LogService member and raised a red runtime error at boot.
+    connect(LogService.MessageOut, function(message, messageType)
         if messageType ~= Enum.MessageType.Error then return end
         local text = tostring(message or "")
         if not text:find("attempt to call a nil value", 1, true) then return end

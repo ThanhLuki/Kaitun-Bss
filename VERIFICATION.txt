@@ -1,46 +1,46 @@
 PROJECT: Kaitun-Bss
 BRANCH: main
-CHANGED_BRANCH_FIELD: the top-level progression xpcall result moved from local okProgression/progressionError registers to Runtime.ProgressionOk/Runtime.ProgressionError fields
+CHANGED_BRANCH_FIELD: LogService listener changed from nonexistent OnClientMessage(messageType, message) to MessageOut(message, messageType)
 
 MODIFIED_FILE: C:\Users\ADMIN\Downloads\luavm\Kaitun-Bss\KaitunBSS.lua
-DIFF_FILE: C:\Users\ADMIN\Downloads\luavm\Kaitun-Bss\KaitunBSS.local-register-fix.patch
+DIFF_FILE: C:\Users\ADMIN\Downloads\luavm\Kaitun-Bss\KaitunBSS.logservice-fix.patch
 VERIFICATION_FILE: C:\Users\ADMIN\Downloads\luavm\Kaitun-Bss\VERIFICATION.txt
 ROLLBACK_FILE: C:\Users\ADMIN\Downloads\luavm\Kaitun-Bss\ROLLBACK.sh
 SYNCED_ACTIVE_FILE: C:\Users\ADMIN\Downloads\nangbss\kaitun_v1.2.lua
-ORIGINAL_BACKUP: C:\Users\ADMIN\Downloads\nangbss\kaitun_v1.2.lua.original
+ORIGINAL_BACKUP: C:\Users\ADMIN\Downloads\nangbss\kaitun_v1.2.lua.pre-logservice-fix
 
 BASELINE
-COMMAND: Select-String -LiteralPath "C:\Users\ADMIN\Downloads\nangbss\kaitun_v1.2.lua.original" -SimpleMatch "local okProgression, progressionError = xpcall(progression, debug.traceback)"; fail when present
-INPUT: C:\Users\ADMIN\Downloads\nangbss\kaitun_v1.2.lua.original
+COMMAND: Select-String -LiteralPath "C:\Users\ADMIN\Downloads\nangbss\kaitun_v1.2.lua.pre-logservice-fix" -SimpleMatch "connect(LogService.OnClientMessage, function(messageType, message)"; fail when present
+INPUT: C:\Users\ADMIN\Downloads\nangbss\kaitun_v1.2.lua.pre-logservice-fix
 LITERAL_OUTPUT_RESULT:
-OFFENDING_TOP_LEVEL_LOCAL_PRESENT=True
-LINE=16819: local okProgression, progressionError = xpcall(progression, debug.traceback)
+INVALID_MEMBER_PRESENT=True
+LINE=15055: connect(LogService.OnClientMessage, function(messageType, message)
 EXIT_STATUS: 1
 
 MODIFIED
-COMMAND: verify the old top-level local is absent and Runtime fields are present; & "C:\Users\ADMIN\Downloads\luavm\.tools\luau-0.700\luau-compile.exe" --null "C:\Users\ADMIN\Downloads\nangbss\kaitun_v1.2.lua"
+COMMAND: verify LogService.OnClientMessage is absent and MessageOut(message, messageType) is present; & "C:\Users\ADMIN\Downloads\luavm\.tools\luau-0.700\luau-compile.exe" --null "C:\Users\ADMIN\Downloads\nangbss\kaitun_v1.2.lua"
 INPUT: C:\Users\ADMIN\Downloads\nangbss\kaitun_v1.2.lua
 LITERAL_OUTPUT_RESULT:
-OFFENDING_TOP_LEVEL_LOCAL_PRESENT=False
-RUNTIME_FIELDS_PRESENT=True
-LINE=16822: Runtime.ProgressionOk, Runtime.ProgressionError = xpcall(progression, debug.traceback)
+INVALID_MEMBER_PRESENT=False
+MESSAGEOUT_SIGNATURE_PRESENT=True
+LINE=15057: connect(LogService.MessageOut, function(message, messageType)
 Compiled 16 KLOC into 489 KB bytecode (read 0.00s, parse 0.02s, compile 0.02s)
 LUAU_0_700_COMPILE_EXIT=0
 EXIT_STATUS: 0
 
 ROLLBACK
-COMMAND: & "C:\Program Files\Git\bin\bash.exe" "C:\Users\ADMIN\Downloads\luavm\Kaitun-Bss\ROLLBACK.sh" "C:\Users\ADMIN\Downloads\luavm\Kaitun-Bss\rollback-register-test"
-INPUT: another fixed copy at C:\Users\ADMIN\Downloads\luavm\Kaitun-Bss\rollback-register-test\KaitunBSS.lua
+COMMAND: & "C:\Program Files\Git\bin\bash.exe" "C:\Users\ADMIN\Downloads\luavm\Kaitun-Bss\ROLLBACK.sh" "C:\Users\ADMIN\Downloads\luavm\Kaitun-Bss\rollback-logservice-test"
+INPUT: another fixed copy at C:\Users\ADMIN\Downloads\luavm\Kaitun-Bss\rollback-logservice-test\KaitunBSS.lua
 LITERAL_OUTPUT_RESULT:
-RESTORED: C:\Users\ADMIN\Downloads\luavm\Kaitun-Bss\rollback-register-test/KaitunBSS.lua
+RESTORED: C:\Users\ADMIN\Downloads\luavm\Kaitun-Bss\rollback-logservice-test/KaitunBSS.lua
 ROLLBACK_EXIT=0
-OLD_LOCAL_RESTORED=True
-RUNTIME_FIELDS_ABSENT=True
-RESTORED_SHA256=71FE9B24A22BA4ABBC9F59AA0E45EF1D4E7D69E65E8DD6F8A65A17952BCEFA86
+INVALID_MEMBER_RESTORED=True
+MESSAGEOUT_SIGNATURE_ABSENT=True
+RESTORED_SHA256=7659B9A76A6E069BCE6E7E29AED225EDA349C6B1A50B153E0262261AF9DFDDD0
 MATCHES_BASELINE=True
 EXIT_STATUS: 0
-RESTORED_BEHAVIOR_STATUS: another copy restored the original top-level local block and exact baseline SHA256; actual MODIFIED_FILE remains on the Runtime-field fix.
+RESTORED_BEHAVIOR_STATUS: another copy restored the original invalid listener and exact baseline SHA256; actual MODIFIED_FILE remains on the valid MessageOut listener.
 
 HASHES
-ORIGINAL_SHA256: 71FE9B24A22BA4ABBC9F59AA0E45EF1D4E7D69E65E8DD6F8A65A17952BCEFA86
-MODIFIED_SHA256: 7659B9A76A6E069BCE6E7E29AED225EDA349C6B1A50B153E0262261AF9DFDDD0
+ORIGINAL_SHA256: 7659B9A76A6E069BCE6E7E29AED225EDA349C6B1A50B153E0262261AF9DFDDD0
+MODIFIED_SHA256: A27283B7465F463DEA3B1DC07C76CFC559EA08B755FD69BD85FD0E00CE75AFCE
