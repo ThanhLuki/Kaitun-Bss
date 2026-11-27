@@ -16816,9 +16816,12 @@ end
 print("[Hayami Hub] Loaded (v1.2 build 1108 | hideGameUI=REMOVED | sprout=duo-container | detector-hub)")
 
 while Runtime.Running do
-    local okProgression, progressionError = xpcall(progression, debug.traceback)
-    if okProgression then break end
-    reportError("Progression", progressionError)
+    -- Keep the xpcall result on Runtime instead of allocating two more
+    -- top-level locals. Luau caps a function at 200 local registers, and this
+    -- main chunk is already at that limit on executor builds based on 0.700.
+    Runtime.ProgressionOk, Runtime.ProgressionError = xpcall(progression, debug.traceback)
+    if Runtime.ProgressionOk then break end
+    reportError("Progression", Runtime.ProgressionError)
     setStatus("Recovery progression", "Restarting after error")
     if not Runtime.MeteorHandling then cancelMovement() end
     task.wait(Config.RetryDelay)
