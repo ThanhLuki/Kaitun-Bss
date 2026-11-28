@@ -84,6 +84,7 @@ end
 local USER_DEFAULTS = {
     Enabled = true,
     AutoFarm = true,
+    AutoDig = true,
     AutoConvert = true,
     AutoTokens = true,
     AutoQuest = true,
@@ -16121,7 +16122,7 @@ end
 -- Control panel maps onto the UI's existing tabs (Status/Farm/Move/Hive/Lag/Planter).
 local KAITUN_UI_LAYOUT = {
     {Tab = "Farm", Sections = {
-        {"General", {"Enabled", "AutoFarm", "AutoConvert", "AutoTokens", "FarmField"}},
+        {"General", {"Enabled", "AutoFarm", "AutoDig", "AutoConvert", "AutoTokens", "FarmField"}},
         {"Gather", {"AutoFarmLeaves", "AutoFarmSparkles", "AutoFarmFireflies", "AutoFarmSprouts"}},
         {"Combat", {"AutoFarmVicious", "AutoFarmViciousAlways", "AutoFarmMondoChick"}},
         {"Events", {"AutoMeteor", "AutoTriggerMeteor", "AutoWealthClock", "AutoFreeToys"}},
@@ -17322,6 +17323,9 @@ end
 -- only a fallback for executors that cannot require the module. The collector
 -- must still be HELD: EnsureCollectorEquipped verifies it physically.
 function Runtime.DigOnce()
+    -- SeaHub AutoDig semantics: one switch gates every collector swing, including
+    -- quest/event paths that call DigOnce directly. Kaitun defaults this ON.
+    if not Config.AutoDig then return false end
     local run = Runtime.LocalCollectRun
     if run == nil and os.clock() >= (Runtime.LocalCollectRetryAt or 0) then
         Runtime.LocalCollectRetryAt = os.clock() + 30
@@ -17352,7 +17356,8 @@ end
 
 task.spawn(function()
     while Runtime.Running do
-        if Config.Enabled and Config.AutoFarm and (Runtime.Digging or Runtime.State == "Auto meteor") then
+        if Config.Enabled and Config.AutoFarm and Config.AutoDig
+            and (Runtime.Digging or Runtime.State == "Auto meteor") then
             if os.clock() >= (Runtime.NextCollectorEquipCheck or 0) then
                 Runtime.NextCollectorEquipCheck = os.clock() + 5
                 pcall(Runtime.EnsureCollectorEquipped)
